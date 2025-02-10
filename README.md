@@ -83,10 +83,5 @@ The Firestore indexes are defined in `firestore.indexes.json`. This file is used
 
 Contributions are welcome! If you have suggestions for improvements or new features, feel free to open an issue or submit a pull request.
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
 
 Thank you for checking out AK Jewelers! We hope you enjoy browsing our collection of fine jewelry.
