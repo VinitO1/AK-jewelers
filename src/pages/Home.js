@@ -11,15 +11,16 @@ function Home() {
     const loadProducts = async () => {
       try {
         const products = await fetchProducts();
-        // Get 2 products from each category
-        const featured = products.reduce((acc, product) => {
-          if (acc[product.category]?.length < 2) {
-            acc[product.category] = [...(acc[product.category] || []), product];
-          }
-          return acc;
-        }, {});
+        const featured = {};
         
-        setFeaturedProducts(Object.values(featured).flat());
+        // Select one product from each category
+        products.forEach(product => {
+          if (product.featured && !featured[product.category]) {
+            featured[product.category] = product; // Store the first featured product found for each category
+          }
+        });
+
+        setFeaturedProducts(Object.values(featured)); // Convert the object to an array
       } catch (error) {
         console.error('Error loading products:', error);
       } finally {
@@ -31,7 +32,12 @@ function Home() {
   }, []);
 
   const getProductPath = (category, id) => {
-    return `/${category}/${id.split('-')[1]}`; // Extract the numeric ID
+    if (typeof id === 'string') {
+      return `/${category}/${id.split('-')[1]}`; // Extract the numeric ID
+    } else {
+      console.error('Invalid ID:', id); // Log the invalid ID for debugging
+      return `/${category}/unknown`; // Fallback path
+    }
   };
 
   if (loading) {
@@ -117,33 +123,42 @@ function Home() {
         <Container>
           <h2 className="text-center mb-4">Featured Products</h2>
           <Row className="g-4">
-            {featuredProducts.map(product => (
-              <Col key={product.id} md={4}>
-                <Card className="h-100 product-card">
-                  <div className="card-img-wrapper">
-                    <Card.Img 
-                      variant="top" 
-                      src={product.image}
-                      alt={product.title}
-                      onError={(e) => {
-                        e.target.src = '/images/placeholder.jpg';
-                      }}
-                    />
-                  </div>
-                  <Card.Body>
-                    <Card.Title>{product.title}</Card.Title>
-                    <Card.Text>${product.price.toFixed(2)}</Card.Text>
-                    <Button 
-                      as={Link} 
-                      to={getProductPath(product.category, product.id)}
-                      variant="outline-primary"
-                    >
-                      View Details
-                    </Button>
-                  </Card.Body>
-                </Card>
+            {featuredProducts.length > 0 ? (
+              featuredProducts.map(product => {
+                console.log('Product:', product); // Log the product object
+                return (
+                  <Col key={product.id} md={4}>
+                    <Card className="h-100 product-card">
+                      <div className="card-img-wrapper">
+                        <Card.Img 
+                          variant="top" 
+                          src={product.image}
+                          alt={product.title}
+                          onError={(e) => {
+                            e.target.src = '/images/placeholder.jpg';
+                          }}
+                        />
+                      </div>
+                      <Card.Body>
+                        <Card.Title>{product.title}</Card.Title>
+                        <Card.Text>${product.price.toFixed(2)}</Card.Text>
+                        <Button 
+                          as={Link} 
+                          to={getProductPath(product.category, product.id)}
+                          variant="outline-primary"
+                        >
+                          View Details
+                        </Button>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                );
+              })
+            ) : (
+              <Col>
+                <p className="text-center">No featured products available.</p>
               </Col>
-            ))}
+            )}
           </Row>
         </Container>
       </div>

@@ -15,6 +15,7 @@ import PrivateRoute from './components/PrivateRoute.js';
 import ProductDetail from './pages/ProductDetail.js';
 import NotFound from './pages/NotFound.js';
 import Congratulations from './pages/Congratulations';
+import ProductDetails from './pages/ProductDetails';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
               <Route path="/earrings/:id" element={<ProductDetail category="earrings" />} />
               <Route path="/rings/:id" element={<ProductDetail category="rings" />} />
               <Route path="/necklaces/:id" element={<ProductDetail category="necklaces" />} />
+              <Route path="/:category/:id" element={<ProductDetails />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
